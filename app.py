@@ -23,8 +23,6 @@ from typing import Type
 load_dotenv()
 
 # Setup logging
-log_format = '%(asctime)s - %(levelname)s - %(filename)s: %(message)s'
-logging.basicConfig(filename='logs/info.log', level=logging.INFO, format=log_format)
 
 browserless_api_key = os.getenv('BROWSERLESS_API_KEY')
 serper_api_key = os.getenv('SERP_API_KEY')
