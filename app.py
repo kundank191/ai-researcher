@@ -2,7 +2,20 @@ import os
 import logging
 import json
 from bs4 import BeautifulSoup
+
+from langchain import PromptTemplate
+from langchain.agents import initialize_agent, Tool, AgentType
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import MessagesPlaceholder
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains.summarize import load_summarize_chain
+from langchain.schema import SystemMessage
+from langchain.tools import BaseTool
+from pydantic import BaseModel, Field
+
 import requests
+import streamlit as st
 
 # Setup logging
 log_format = '%(asctime)s - %(levelname)s - %(filename)s: %(message)s'
@@ -73,11 +86,48 @@ def scrape_website(objective: str, url: str):
         text = soup.get_text()
         logging.info("Content from website ", text )
 
-        return text
+        if len(text) > 10000:
+            output = summarize(objective, text)
+            return output
+        else:
+            return text
     else:
         logging.info(f"Http request failed with status code : {response.status_code}, details : {response.text}")
 
-scrape_website(
-    objective = "Get Detailed Information", 
-    url = "https://medium.com/@aaabulkhair/so-which-ml-algorithm-to-use-d2484239f448"
-)
+# Sumamrize content
+def summarize(objective, content):
+    llm = ChatOpenAI(temperature = 0, model = "gpt-3.5-turbo-16k-0613")
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        separators = ["\n\n", "\n"],
+        chunk_size = 10000,
+        chunk_overlap = 500
+    )
+
+    docs = text_splitter.create_documents([content])
+
+    map_prompt = """
+    Write a summary of teh following text for {objective}:
+    "{text}"
+    SUMMARY:
+    """
+
+    map_prompt_template = PromptTemplate(
+        template = map_prompt,
+        input_variables = ["text","objective"]
+    )
+
+    summary_chain = load_summarize_chain(
+        llm = llm,
+        chain_type = "map_reduce",
+        map_prompt = map_prompt_template,
+        combine_prompt = map_prompt_template,
+        verbose = True
+    )
+
+    ouput = summary_chain.run(
+        input_documents = docs,
+        objective = objective
+    )
+
+    return ouput
