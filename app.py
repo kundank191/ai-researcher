@@ -142,7 +142,7 @@ class ScrapeWebsiteInput(BaseModel):
     objective : str = Field(description = "The objective and task that users give to the agent")
     url : str = Field(description = "The URL of the website to be scraped")
 
-class ScrapeWebsiteTool(BaseModel):
+class ScrapeWebsiteTool(BaseTool):
     """This tool will run the scrape website and return the results"""
 
     name : str = "scrape_website"
