@@ -141,8 +141,8 @@ class ScrapeWebsiteInput(BaseModel):
 class ScrapeWebsiteTool(BaseModel):
     """This tool will run the scrape website and return the results"""
 
-    name = "scrape_website"
-    description = "useful when you need to get the data from a website url; passing both the url and the objective to the function; Donot Make up any url; Donot make up any url"
+    name : str = "scrape_website"
+    description : str = "useful when you need to get the data from a website url; passing both the url and the objective to the function; Donot Make up any url; Donot make up any url"
     args_schema: Type[BaseModel] = ScrapeWebsiteInput
 
     def _run(self, objective : str, url : str):
@@ -201,3 +201,23 @@ agent = initialize_agent(
     agent_kwargs = agent_kwargs,
     memory = memory
 )
+
+# def User streamlit to create a web app
+def main():
+
+    st.set_page_config(
+        page_title = "AI Researcher",
+        page_icon = ":bird:"
+    )
+
+    st.header("AI Researcher :bird:")
+
+    query = st.text_input("Research Goal")
+
+    if query:
+        st.write("Doing research for ", query)
+        result = agent({"input" : query})
+        st.info(result['output'])
+
+if __name__ == '__main__':
+    main()
