@@ -2,6 +2,7 @@
 Enter a Reasearch goal and it will return content with references. This tool is different because it doent makes up URLs or content, it is based on facts and well referenced information. The content is hence authentic and credible.
 
 Try the Tool Here : https://kundan-ai-researcher.streamlit.app/
+If you want to learn in detail how the code works then checkout this video : https://www.youtube.com/watch?v=ogQUlS7CkYA&pp=ygUIYWkgamFzb24%3D
 
 # Here are the steps explaining how it works:
 
