@@ -13,10 +13,14 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain.schema import SystemMessage
 from langchain.tools import BaseTool
 from pydantic import BaseModel, Field
+from dotenv import load_dotenv
 
 import requests
 import streamlit as st
 from typing import Type
+
+# intialize the environment variables
+load_dotenv()
 
 # Setup logging
 log_format = '%(asctime)s - %(levelname)s - %(filename)s: %(message)s'
